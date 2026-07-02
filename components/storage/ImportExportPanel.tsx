@@ -1,6 +1,7 @@
 "use client";
 
 import { exportCurrentState, importState, resetAllState } from "@/store/persistence-store";
+import { Button } from "@/components/ui/button";
 
 export function ImportExportPanel() {
   function handleExport() {
@@ -31,36 +32,43 @@ export function ImportExportPanel() {
   }
 
   return (
-    <div className="space-y-3 border-2 border-border p-4" data-testid="import-export-panel">
-      <h3 className="text-xs font-bold uppercase tracking-widest">
-        Backup
+    <div className="section-card" data-testid="import-export-panel">
+      <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+        Data Backup
       </h3>
-      <button
+
+      <Button
         type="button"
-        className="w-full border-2 border-foreground px-3 py-2 text-xs font-bold uppercase"
+        className="w-full"
         data-testid="export-button"
         onClick={handleExport}
       >
         Export JSON
-      </button>
-      <label className="block text-xs">
-        <span className="mb-1 block text-muted-foreground">Import JSON</span>
+      </Button>
+
+      <label className="block space-y-1.5 text-[11px]">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          Import JSON
+        </span>
         <input
           type="file"
           accept="application/json,.json"
           aria-label="Import JSON backup"
+          className="block w-full text-[11px] text-muted-foreground file:mr-3 file:border file:border-border file:bg-background file:px-2 file:py-1 file:font-mono file:text-[10px] file:uppercase file:text-foreground"
           data-testid="import-input"
           onChange={handleImport}
         />
       </label>
-      <button
+
+      <Button
         type="button"
-        className="w-full border-2 border-destructive px-3 py-2 text-xs uppercase text-destructive"
+        variant="destructive"
+        className="w-full"
         data-testid="reset-button"
         onClick={() => resetAllState()}
       >
         Reset all local data
-      </button>
+      </Button>
     </div>
   );
 }

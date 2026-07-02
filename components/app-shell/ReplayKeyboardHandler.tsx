@@ -4,7 +4,13 @@ import { useEffect } from "react";
 
 import { useCandleContext } from "@/components/app-shell/CandleProvider";
 
-export function ReplayKeyboardHandler() {
+type ReplayKeyboardHandlerProps = {
+  onToggleShortcuts?: () => void;
+};
+
+export function ReplayKeyboardHandler({
+  onToggleShortcuts,
+}: ReplayKeyboardHandlerProps) {
   const { stepForward, stepBackward, togglePlayPause, isLoading } =
     useCandleContext();
 
@@ -22,6 +28,12 @@ export function ReplayKeyboardHandler() {
           target.tagName === "SELECT" ||
           target.isContentEditable)
       ) {
+        return;
+      }
+
+      if (event.key === "?" && onToggleShortcuts) {
+        event.preventDefault();
+        onToggleShortcuts();
         return;
       }
 
@@ -57,7 +69,7 @@ export function ReplayKeyboardHandler() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isLoading, stepBackward, stepForward, togglePlayPause]);
+  }, [isLoading, onToggleShortcuts, stepBackward, stepForward, togglePlayPause]);
 
   return null;
 }

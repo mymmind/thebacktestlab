@@ -1,13 +1,13 @@
 import { StatsCards } from "@/components/stats/StatsCards";
-import { PersistenceProvider } from "@/store/persistence-store";
+import { PageLayout } from "@/components/app-shell/PageLayout";
 
 export default function StatsPage() {
   return (
-    <PersistenceProvider>
-      <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 p-8">
-        <h1 className="text-2xl font-bold uppercase tracking-widest">Stats</h1>
-        <StatsCards />
-      </main>
-    </PersistenceProvider>
+    <PageLayout
+      title="Stats"
+      subtitle="Discipline metrics from your replay sessions. No vanity dashboards — just the numbers that matter."
+    >
+      <StatsCards />
+    </PageLayout>
   );
 }

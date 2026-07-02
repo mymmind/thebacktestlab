@@ -93,7 +93,7 @@ describe("CandleChart", () => {
         expect.objectContaining({ close: 1.15 }),
         expect.objectContaining({
           close: 1.2,
-          color: "#fbbf24",
+          color: "#e5e5e5",
         }),
       ]),
     );

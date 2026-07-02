@@ -24,15 +24,16 @@ type RuleChecklistProps = {
 export function RuleChecklist({ trade, onChange }: RuleChecklistProps) {
   return (
     <div className="space-y-2" data-testid="rule-checklist">
-      <h4 className="text-xs font-bold uppercase tracking-widest">
+      <h4 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
         Rule Checklist
       </h4>
-      <ul className="space-y-1">
+      <ul className="space-y-1.5">
         {RULE_ITEMS.map(({ key, label }) => (
           <li key={key}>
-            <label className="flex items-center gap-2 text-xs">
+            <label className="flex cursor-pointer items-start gap-2.5 text-[11px] leading-snug">
               <input
                 type="checkbox"
+                className="mt-0.5 accent-foreground"
                 checked={trade.ruleChecklist[key]}
                 data-testid={`rule-check-${key}`}
                 onChange={(event) =>
@@ -42,7 +43,7 @@ export function RuleChecklist({ trade, onChange }: RuleChecklistProps) {
                   })
                 }
               />
-              {label}
+              <span className="text-muted-foreground">{label}</span>
             </label>
           </li>
         ))}
@@ -66,23 +67,36 @@ export function JournalPanel({
 }: JournalPanelProps) {
   if (!trade || !journal) {
     return (
-      <div className="p-4 text-sm text-muted-foreground" data-testid="journal-panel">
-        Select a closed trade to journal
+      <div className="empty-state" data-testid="journal-panel">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          No trade selected
+        </p>
+        <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+          Close a trade in the workspace, then select it here to document your
+          process and rule adherence.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 p-4" data-testid="journal-panel">
-      <h3 className="text-xs font-bold uppercase tracking-widest">
-        Journal — {trade.direction} {trade.symbol}
-      </h3>
+    <div className="panel-frame space-y-5 p-5" data-testid="journal-panel">
+      <div>
+        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          Trade review
+        </p>
+        <h3 className="mt-1 text-lg font-bold uppercase tracking-wide">
+          {trade.direction} {trade.symbol}
+        </h3>
+      </div>
 
-      <label className="block space-y-1 text-xs">
-        <span className="text-muted-foreground">Pre-trade note</span>
+      <label className="block space-y-1.5">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          Pre-trade note
+        </span>
         <textarea
           aria-label="Pre-trade note"
-          className="min-h-16 w-full border border-border bg-background p-2"
+          className="terminal-input min-h-20 resize-y"
           data-testid="journal-pre-trade-note"
           value={journal.preTradeNote ?? ""}
           onChange={(event) =>
@@ -94,11 +108,13 @@ export function JournalPanel({
         />
       </label>
 
-      <label className="block space-y-1 text-xs">
-        <span className="text-muted-foreground">Post-trade note</span>
+      <label className="block space-y-1.5">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          Post-trade note
+        </span>
         <textarea
           aria-label="Post-trade note"
-          className="min-h-16 w-full border border-border bg-background p-2"
+          className="terminal-input min-h-20 resize-y"
           data-testid="journal-post-trade-note"
           value={journal.postTradeNote ?? ""}
           onChange={(event) =>
@@ -110,9 +126,10 @@ export function JournalPanel({
         />
       </label>
 
-      <label className="flex items-center gap-2 text-xs">
+      <label className="flex cursor-pointer items-center gap-2.5 text-[11px]">
         <input
           type="checkbox"
+          className="accent-foreground"
           checked={journal.followedRules}
           data-testid="journal-followed-rules"
           onChange={(event) =>
@@ -122,7 +139,7 @@ export function JournalPanel({
             })
           }
         />
-        Followed rules
+        <span className="text-muted-foreground">Followed rules</span>
       </label>
 
       <RuleChecklist trade={trade} onChange={onChecklistChange} />

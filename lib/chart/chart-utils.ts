@@ -7,7 +7,7 @@ import type {
 } from "lightweight-charts";
 import { ColorType } from "lightweight-charts";
 
-const CURRENT_CANDLE_COLOR = "#fbbf24";
+const CURRENT_CANDLE_COLOR = "#e5e5e5";
 
 export function candleTimestampToChartTime(timestamp: number): UTCTimestamp {
   return (timestamp / 1000) as UTCTimestamp;
@@ -51,7 +51,7 @@ export function getChartTheme(): DeepPartial<ChartOptions> {
     layout: {
       background: { type: ColorType.Solid, color: "transparent" },
       textColor: "#a3a3a3",
-      fontFamily: "var(--font-geist-mono), ui-monospace, monospace",
+      fontFamily: "var(--font-mono), ui-monospace, monospace",
     },
     grid: {
       vertLines: { color: "rgba(255, 255, 255, 0.06)" },

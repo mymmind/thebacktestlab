@@ -1,6 +1,7 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import {
   SAMPLE_SYMBOLS,
   TIMEFRAMES,
@@ -8,27 +9,52 @@ import {
 } from "@/components/app-shell/CandleProvider";
 import type { SampleSymbol, Timeframe } from "@/lib/candles/candle-types";
 import { useSettingsStore } from "@/store/settings-store";
+import { cn } from "@/lib/utils";
 
 const DEFAULT_DATE = "2024-01-15";
 
-export function TopStatusBar() {
+type TopStatusBarProps = {
+  compact?: boolean;
+};
+
+export function TopStatusBar({ compact = false }: TopStatusBarProps) {
   const { symbol, timeframe, setSymbol, setTimeframe, isLoading } =
     useCandleContext();
   const accountBalance = useSettingsStore((state) => state.accountBalance);
   const challenge = useSettingsStore((state) => state.challenge);
 
+  const challengeVariant =
+    challenge.status === "failed"
+      ? "danger"
+      : challenge.status === "passed"
+        ? "success"
+        : "outline";
+
   return (
-    <header className="flex h-12 shrink-0 items-center gap-4 border-b-2 border-border bg-card px-4">
-      <h1 className="text-sm font-bold uppercase tracking-widest text-foreground">
-        Backtesting Lab
-      </h1>
-      <Separator orientation="vertical" className="h-6" />
-      <div className="flex flex-wrap items-center gap-4 text-sm">
-        <label className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">Symbol</span>
+    <header
+      className={cn(
+        "flex shrink-0 items-center gap-3 border-b border-border bg-card/95 px-3 backdrop-blur-sm lg:gap-4 lg:px-4",
+        compact ? "h-11" : "h-12",
+      )}
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <h1 className="truncate text-sm font-bold uppercase tracking-[0.15em] text-foreground lg:text-base">
+          Backtesting Lab
+        </h1>
+        {!compact ? (
+          <span className="hidden text-[10px] uppercase tracking-widest text-muted-foreground sm:inline">
+            Replay Cockpit
+          </span>
+        ) : null}
+      </div>
+
+      <Separator orientation="vertical" className="hidden h-5 sm:block" />
+
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 lg:gap-3">
+        <HudChip label="Symbol">
           <select
             aria-label="Symbol"
-            className="rounded border border-border bg-background px-2 py-0.5 font-mono font-semibold"
+            className="terminal-select border-0 bg-transparent p-0"
             data-testid="symbol-selector"
             disabled={isLoading}
             value={symbol}
@@ -43,12 +69,12 @@ export function TopStatusBar() {
           <span className="sr-only" data-testid="selected-symbol">
             {symbol}
           </span>
-        </label>
-        <label className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">TF</span>
+        </HudChip>
+
+        <HudChip label="TF">
           <select
             aria-label="Timeframe"
-            className="rounded border border-border bg-background px-2 py-0.5 font-mono font-semibold"
+            className="terminal-select border-0 bg-transparent p-0"
             data-testid="timeframe-selector"
             disabled={isLoading}
             value={timeframe}
@@ -63,27 +89,41 @@ export function TopStatusBar() {
           <span className="sr-only" data-testid="selected-timeframe">
             {timeframe}
           </span>
-        </label>
-        <span className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">Date</span>
-          <span className="font-mono">{DEFAULT_DATE}</span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">Balance</span>
-          <span className="font-mono" data-testid="account-balance">
+        </HudChip>
+
+        <HudChip label="Date" value={DEFAULT_DATE} className="hidden md:inline-flex" />
+
+        <HudChip label="Balance">
+          <span className="hud-chip-value" data-testid="account-balance">
             {accountBalance.toFixed(2)}
           </span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">Challenge</span>
-          <span
-            className="font-mono uppercase"
-            data-testid="challenge-status"
-          >
+        </HudChip>
+
+        <HudChip label="Challenge">
+          <Badge variant={challengeVariant} data-testid="challenge-status">
             {challenge.status}
-          </span>
-        </span>
+          </Badge>
+        </HudChip>
       </div>
     </header>
+  );
+}
+
+function HudChip({
+  label,
+  value,
+  children,
+  className,
+}: {
+  label: string;
+  value?: string;
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <span className={cn("hud-chip", className)}>
+      <span className="hud-chip-label">{label}</span>
+      {value ? <span className="hud-chip-value font-mono">{value}</span> : children}
+    </span>
   );
 }

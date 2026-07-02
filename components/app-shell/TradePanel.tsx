@@ -9,10 +9,13 @@ import { TradeLog } from "@/components/trades/TradeLog";
 import { TradeTicket } from "@/components/trades/TradeTicket";
 import { ImportExportPanel } from "@/components/storage/ImportExportPanel";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { useCandleContext } from "@/components/app-shell/CandleProvider";
 import { useOpenTrade, useTradeStore } from "@/store/trade-store";
+import { cn } from "@/lib/utils";
 
 export function TradePanel() {
   const [collapsed, setCollapsed] = useState(false);
@@ -29,7 +32,7 @@ export function TradePanel() {
     return (
       <aside
         aria-label="Trade panel"
-        className="flex w-10 shrink-0 flex-col items-center border-l-2 border-border bg-card py-2"
+        className="flex w-10 shrink-0 flex-col items-center border-l border-border bg-card py-2 transition-all"
       >
         <Button
           variant="ghost"
@@ -39,6 +42,9 @@ export function TradePanel() {
         >
           <ChevronLeft className="size-4" />
         </Button>
+        <span className="mt-4 origin-center rotate-90 text-[9px] uppercase tracking-[0.3em] text-muted-foreground">
+          Trade
+        </span>
       </aside>
     );
   }
@@ -46,10 +52,10 @@ export function TradePanel() {
   return (
     <aside
       aria-label="Trade panel"
-      className="flex w-64 shrink-0 flex-col border-l-2 border-border bg-card lg:w-72"
+      className="animate-panel-in flex w-72 shrink-0 flex-col border-l border-border bg-card lg:w-80"
     >
-      <div className="flex items-center justify-between border-b-2 border-border px-3 py-2">
-        <h2 className="text-xs font-bold uppercase tracking-widest">Trade</h2>
+      <div className="panel-header">
+        <h2 className="panel-header-title text-foreground">Execution Deck</h2>
         <Button
           variant="ghost"
           size="icon-sm"
@@ -59,14 +65,21 @@ export function TradePanel() {
           <ChevronRight className="size-4" />
         </Button>
       </div>
+
+      <div
+        className={cn(
+          "border-b border-border px-4 py-2.5 font-mono text-xs",
+          openTrade ? "bg-success/5 text-success" : "text-muted-foreground",
+        )}
+        data-testid="trade-panel-open-status"
+      >
+        {openTrade
+          ? `${openTrade.direction.toUpperCase()} OPEN @ ${openTrade.entryPrice.toFixed(5)}`
+          : "No open position"}
+      </div>
+
       <ScrollArea className="flex-1">
         <div className="space-y-4 p-4">
-          <div data-testid="trade-panel-open-status">
-            {openTrade
-              ? `${openTrade.direction} open @ ${openTrade.entryPrice.toFixed(5)}`
-              : "No open trade"}
-          </div>
-
           {draft ? (
             <TradeTicket
               draft={draft}
@@ -76,7 +89,21 @@ export function TradePanel() {
               onConfirm={confirmDraft}
               onCancel={cancelDraft}
             />
-          ) : null}
+          ) : (
+            <div className="section-card">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Quick entry
+              </p>
+              <div className="flex gap-2">
+                <Badge variant="outline">
+                  <Kbd className="mr-1 border-0 bg-transparent p-0">L</Kbd> Long
+                </Badge>
+                <Badge variant="outline">
+                  <Kbd className="mr-1 border-0 bg-transparent p-0">S</Kbd> Short
+                </Badge>
+              </div>
+            </div>
+          )}
 
           <RiskPanel />
           <PropFirmPanel />
@@ -84,9 +111,11 @@ export function TradePanel() {
           <ImportExportPanel />
         </div>
       </ScrollArea>
+
       <Separator />
-      <p className="p-3 text-xs text-muted-foreground">
-        L/S long/short · Enter confirm · Esc cancel · X close
+      <p className="px-4 py-2.5 text-[10px] leading-relaxed text-muted-foreground">
+        <Kbd>L</Kbd>/<Kbd>S</Kbd> ticket · <Kbd>Enter</Kbd> confirm · <Kbd>Esc</Kbd> cancel ·{" "}
+        <Kbd>X</Kbd> close
       </p>
     </aside>
   );

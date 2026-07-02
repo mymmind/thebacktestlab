@@ -5,6 +5,10 @@ import { calculateRisk } from "@/lib/trades/risk-engine";
 import { parsePrice, validateTradeDraft } from "@/lib/trades/trade-engine";
 import type { TradeDraft } from "@/lib/trades/trade-types";
 import { useSettingsStore } from "@/store/settings-store";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Kbd } from "@/components/ui/kbd";
 
 type TradeTicketProps = {
   draft: TradeDraft;
@@ -51,38 +55,37 @@ export function TradeTicket({
       : null;
 
   return (
-    <div
-      className="space-y-3 border-2 border-border p-3"
-      data-testid="trade-ticket"
-    >
+    <div className="section-card" data-testid="trade-ticket">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold uppercase tracking-widest">
+        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           Trade Ticket
         </h3>
-        <span
-          className="font-mono text-xs uppercase"
+        <Badge
+          variant={draft.direction === "long" ? "success" : "danger"}
           data-testid="trade-ticket-direction"
         >
           {draft.direction}
-        </span>
+        </Badge>
       </div>
 
-      <label className="block space-y-1 text-xs">
-        <span className="text-muted-foreground">Entry</span>
-        <input
+      <label className="block space-y-1">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          Entry
+        </span>
+        <Input
           readOnly
           aria-label="Entry price"
-          className="w-full border border-border bg-background px-2 py-1 font-mono"
           data-testid="trade-ticket-entry"
           value={draft.entryPrice.toFixed(symbol === "XAUUSD" ? 2 : 5)}
         />
       </label>
 
-      <label className="block space-y-1 text-xs">
-        <span className="text-muted-foreground">Stop Loss</span>
-        <input
+      <label className="block space-y-1">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          Stop Loss
+        </span>
+        <Input
           aria-label="Stop loss"
-          className="w-full border border-border bg-background px-2 py-1 font-mono"
           data-testid="trade-ticket-sl"
           value={draft.stopLossPrice}
           onChange={(event) =>
@@ -91,11 +94,12 @@ export function TradeTicket({
         />
       </label>
 
-      <label className="block space-y-1 text-xs">
-        <span className="text-muted-foreground">Take Profit (optional)</span>
-        <input
+      <label className="block space-y-1">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          Take Profit (optional)
+        </span>
+        <Input
           aria-label="Take profit"
-          className="w-full border border-border bg-background px-2 py-1 font-mono"
           data-testid="trade-ticket-tp"
           value={draft.takeProfitPrice}
           onChange={(event) =>
@@ -105,47 +109,53 @@ export function TradeTicket({
       </label>
 
       {risk ? (
-        <div className="space-y-1 text-xs font-mono">
+        <div className="space-y-1 border border-border bg-background/50 p-2 font-mono text-[11px]">
           <p>
             Risk:{" "}
             <span data-testid="trade-ticket-risk-amount">
               {risk.riskAmount.toFixed(2)}
             </span>
           </p>
-          <p>Distance: {risk.riskDistance.toFixed(5)}</p>
-          {potentialR !== null ? <p>Potential R: {potentialR.toFixed(2)}</p> : null}
+          <p className="text-muted-foreground">
+            Distance: {risk.riskDistance.toFixed(5)}
+          </p>
+          {potentialR !== null ? (
+            <p className="text-muted-foreground">
+              Potential R: {potentialR.toFixed(2)}
+            </p>
+          ) : null}
         </div>
       ) : null}
 
       {!validation.valid ? (
-        <p className="text-xs text-destructive" data-testid="trade-ticket-error">
+        <p className="text-[11px] text-destructive" data-testid="trade-ticket-error">
           {validation.message}
         </p>
       ) : null}
 
       {validationError ? (
-        <p className="text-xs text-destructive">{validationError}</p>
+        <p className="text-[11px] text-destructive">{validationError}</p>
       ) : null}
 
       <div className="flex gap-2">
-        <button
+        <Button
           type="button"
           aria-label="Confirm trade"
-          className="flex-1 border-2 border-foreground px-2 py-1 text-xs font-bold uppercase"
+          className="flex-1"
           data-testid="trade-ticket-confirm"
           disabled={!validation.valid}
           onClick={onConfirm}
         >
-          Confirm (Enter)
-        </button>
-        <button
+          Confirm <Kbd className="ml-1 border-0 bg-transparent p-0 text-inherit">↵</Kbd>
+        </Button>
+        <Button
           type="button"
+          variant="outline"
           aria-label="Cancel trade ticket"
-          className="border-2 border-border px-2 py-1 text-xs uppercase"
           onClick={onCancel}
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

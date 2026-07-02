@@ -10,8 +10,8 @@ const CandleChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex min-h-0 flex-1 items-center justify-center bg-background text-sm text-muted-foreground">
-        Loading chart…
+      <div className="flex min-h-0 flex-1 items-center justify-center bg-background text-xs uppercase tracking-wider text-muted-foreground">
+        Initializing chart viewport…
       </div>
     ),
   },
@@ -21,9 +21,13 @@ export function ChartPanel() {
   return (
     <section
       aria-label="Chart panel"
-      className="flex min-h-0 min-w-0 flex-1 flex-col border-r-2 border-border"
+      className="flex min-h-0 min-w-0 flex-1 flex-col border-r border-border bg-background"
     >
-      <div className="flex min-h-[320px] min-w-0 flex-1 flex-col">
+      <div className="panel-header">
+        <span className="panel-header-title">Price Action Viewport</span>
+        <span className="font-mono text-[10px] text-muted-foreground">LIVE REPLAY</span>
+      </div>
+      <div className="chart-viewport flex min-h-[320px] min-w-0 flex-1 flex-col">
         <CandleChart />
       </div>
       <CurrentCandleStatus />

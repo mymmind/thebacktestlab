@@ -145,11 +145,11 @@ export function CandleChart() {
 
   return (
     <div
-      className="relative h-full min-h-[320px] min-w-0 flex-1 bg-background"
+      className="relative h-full min-h-[320px] min-w-0 flex-1"
       data-testid="candle-chart"
     >
       {isLoading ? (
-        <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
+        <div className="absolute inset-0 flex items-center justify-center text-[11px] uppercase tracking-wider text-muted-foreground">
           Loading chart…
         </div>
       ) : null}

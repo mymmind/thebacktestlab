@@ -43,9 +43,9 @@ describe("chart utils", () => {
     expect(chartData[0]).not.toHaveProperty("color");
     expect(chartData[1]).not.toHaveProperty("color");
     expect(chartData[2]).toMatchObject({
-      color: "#fbbf24",
-      borderColor: "#fbbf24",
-      wickColor: "#fbbf24",
+      color: "#e5e5e5",
+      borderColor: "#e5e5e5",
+      wickColor: "#e5e5e5",
     });
   });
 });
