@@ -21,7 +21,9 @@ test("workspace loads with default symbol and candle status", async ({
   const expected = loadExpectedFirstM15Candle();
 
   await page.goto("/workspace");
-  await expect(page.getByTestId("dev-footer")).toHaveText("Developed by Auto");
+  await expect(page.getByTestId("dev-footer")).toHaveText(
+    "Developed by Composer 2.5",
+  );
   await expect(
     page.getByRole("heading", { name: /workspace|backtesting/i }),
   ).toBeVisible();
