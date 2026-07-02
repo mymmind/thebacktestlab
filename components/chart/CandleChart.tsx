@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   CandlestickSeries,
   createChart,
@@ -35,7 +35,13 @@ export function CandleChart() {
     symbol,
   } = useCandleContext();
 
-  const [chartReady, setChartReady] = useState(false);
+  const shouldFitContentRef = useRef(true);
+  const chartReady =
+    !isLoading && !error && visibleCandles.length > 0;
+
+  useEffect(() => {
+    shouldFitContentRef.current = true;
+  }, [timeframe, symbol]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -72,7 +78,6 @@ export function CandleChart() {
       chartRef.current = null;
       seriesRef.current = null;
       markersRef.current = null;
-      setChartReady(false);
     };
   }, []);
 
@@ -102,12 +107,11 @@ export function CandleChart() {
       markers.setMarkers([]);
     }
 
-    if (data.length > 0) {
+    if (data.length > 0 && shouldFitContentRef.current) {
       chart.timeScale().fitContent();
+      shouldFitContentRef.current = false;
     }
-
-    setChartReady(data.length > 0);
-  }, [visibleCandles, currentCandle, timeframe, symbol]);
+  }, [visibleCandles, currentCandle]);
 
   return (
     <div

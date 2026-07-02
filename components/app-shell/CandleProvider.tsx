@@ -6,15 +6,13 @@ import { SAMPLE_SYMBOLS, TIMEFRAMES } from "@/lib/candles/candle-types";
 import { useReplayStore, useReplaySelectors } from "@/store/replay-store";
 
 export function CandleProvider({ children }: { children: ReactNode }) {
-  const loadSymbol = useReplayStore((state) => state.loadSymbol);
-
   useEffect(() => {
-    void loadSymbol("EURUSD");
+    void useReplayStore.getState().loadSymbol("EURUSD");
 
     return () => {
       useReplayStore.getState().stopPlayback();
     };
-  }, [loadSymbol]);
+  }, []);
 
   return <>{children}</>;
 }

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { create } from "zustand";
 
 import { loadSampleCandles } from "@/lib/candles/candle-loader";
@@ -16,15 +17,8 @@ import {
   type ReplayEngineState,
 } from "@/lib/replay/replay-engine";
 import {
-  getVisibleCandles,
   isComplete,
   selectCurrentCandle,
-  selectLoadedCandles,
-  selectM1Candles,
-  selectReplaySession,
-  selectReplaySpeed,
-  selectReplayStatus,
-  selectVisibleCandleCount,
 } from "@/lib/replay/replay-selectors";
 import type { ReplaySpeed } from "@/lib/replay/replay-types";
 import { resolveTradesForCandle } from "@/store/trade-resolution-bridge";
@@ -246,21 +240,48 @@ export const useReplayStore = create<ReplayStoreState>((set, get) => {
 });
 
 export function useReplaySelectors() {
-  const state = useReplayStore();
+  const session = useReplayStore((state) => state.session);
+  const m1Candles = useReplayStore((state) => state.m1Candles);
+  const candles = useReplayStore((state) => state.candles);
+  const isLoading = useReplayStore((state) => state.isLoading);
+  const error = useReplayStore((state) => state.error);
+
+  const cursorIndex = session.currentCursorIndex;
+  const visibleCandleCount = session.visibleCandleCount;
+
+  const visibleCandles = useMemo(() => {
+    if (candles.length === 0 || cursorIndex < 0) {
+      return [];
+    }
+
+    const endIndex = cursorIndex;
+    const startIndex = Math.max(0, endIndex - visibleCandleCount + 1);
+    return candles.slice(startIndex, endIndex + 1);
+  }, [candles, cursorIndex, visibleCandleCount]);
+
+  const currentCandle = useMemo(() => {
+    if (candles.length === 0) {
+      return null;
+    }
+
+    return candles[cursorIndex] ?? null;
+  }, [candles, cursorIndex]);
+
   return {
-    session: selectReplaySession(state),
-    status: selectReplayStatus(state),
-    speed: selectReplaySpeed(state),
-    m1Candles: selectM1Candles(state),
-    candles: selectLoadedCandles(state),
-    currentCandle: selectCurrentCandle(state),
-    visibleCandles: getVisibleCandles(state),
-    visibleCandleCount: selectVisibleCandleCount(state),
-    cursorIndex: state.session.currentCursorIndex,
-    isLoading: state.isLoading,
-    error: state.error,
-    symbol: state.session.symbol,
-    timeframe: state.session.activeTimeframe,
-    isComplete: isComplete(state),
+    session,
+    status: session.status,
+    speed: session.speed,
+    m1Candles,
+    candles,
+    currentCandle,
+    visibleCandles,
+    visibleCandleCount: visibleCandles.length,
+    cursorIndex,
+    isLoading,
+    error,
+    symbol: session.symbol,
+    timeframe: session.activeTimeframe,
+    isComplete:
+      candles.length > 0 && cursorIndex >= candles.length - 1,
   };
 }
