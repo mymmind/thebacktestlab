@@ -21,6 +21,7 @@ test("workspace loads with default symbol and candle status", async ({
   const expected = loadExpectedFirstM15Candle();
 
   await page.goto("/workspace");
+  await expect(page.getByTestId("dev-footer")).toHaveText("Developed by Auto");
   await expect(
     page.getByRole("heading", { name: /workspace|backtesting/i }),
   ).toBeVisible();
@@ -35,9 +36,6 @@ test("workspace loads with default symbol and candle status", async ({
     expected.close.toFixed(5),
   );
   await expect(page.getByTestId("loaded-candle-count")).not.toHaveText("0");
-  await expect(page.getByTestId("dev-footer")).toHaveText(
-    "Developed by Composer 2.5",
-  );
 });
 
 test("symbol selector loads a different dataset", async ({ page }) => {

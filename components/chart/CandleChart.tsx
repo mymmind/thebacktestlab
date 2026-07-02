@@ -20,11 +20,21 @@ import {
   CURRENT_CANDLE_COLOR,
 } from "@/lib/chart/chart-utils";
 
+function fitChartContent(chart: IChartApi) {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      chart.timeScale().fitContent();
+    });
+  });
+}
+
 export function CandleChart() {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const markersRef = useRef<ISeriesMarkersPluginApi<Time> | null>(null);
+  const shouldFitContentRef = useRef(true);
+  const pendingFitRef = useRef(false);
 
   const {
     visibleCandles,
@@ -35,12 +45,12 @@ export function CandleChart() {
     symbol,
   } = useCandleContext();
 
-  const shouldFitContentRef = useRef(true);
   const chartReady =
     !isLoading && !error && visibleCandles.length > 0;
 
   useEffect(() => {
     shouldFitContentRef.current = true;
+    pendingFitRef.current = false;
   }, [timeframe, symbol]);
 
   useEffect(() => {
@@ -64,8 +74,14 @@ export function CandleChart() {
       }
 
       const { width, height } = entry.contentRect;
-      if (width > 0 && height > 0) {
-        chart.resize(Math.floor(width), Math.floor(height));
+      if (width <= 0 || height <= 0) {
+        return;
+      }
+
+      if (pendingFitRef.current && shouldFitContentRef.current) {
+        fitChartContent(chart);
+        shouldFitContentRef.current = false;
+        pendingFitRef.current = false;
       }
     });
 
@@ -85,6 +101,7 @@ export function CandleChart() {
     const series = seriesRef.current;
     const markers = markersRef.current;
     const chart = chartRef.current;
+    const container = containerRef.current;
 
     if (!series || !markers || !chart) {
       return;
@@ -107,15 +124,28 @@ export function CandleChart() {
       markers.setMarkers([]);
     }
 
-    if (data.length > 0 && shouldFitContentRef.current) {
-      chart.timeScale().fitContent();
-      shouldFitContentRef.current = false;
+    if (data.length === 0 || !shouldFitContentRef.current) {
+      return;
     }
+
+    const { width, height } = container?.getBoundingClientRect() ?? {
+      width: 0,
+      height: 0,
+    };
+
+    if (width > 0 && height > 0) {
+      fitChartContent(chart);
+      shouldFitContentRef.current = false;
+      pendingFitRef.current = false;
+      return;
+    }
+
+    pendingFitRef.current = true;
   }, [visibleCandles, currentCandle]);
 
   return (
     <div
-      className="relative min-h-0 min-w-0 flex-1 bg-background"
+      className="relative h-full min-h-[320px] min-w-0 flex-1 bg-background"
       data-testid="candle-chart"
     >
       {isLoading ? (
@@ -128,7 +158,7 @@ export function CandleChart() {
           {error}
         </div>
       ) : null}
-      <div ref={containerRef} className="absolute inset-0" />
+      <div ref={containerRef} className="absolute inset-0 h-full w-full" />
       <span className="sr-only" data-testid="chart-candle-count">
         {visibleCandles.length}
       </span>

@@ -47,6 +47,7 @@ export function toChartCandles(candles: Candle[]): CandlestickData[] {
 
 export function getChartTheme(): DeepPartial<ChartOptions> {
   return {
+    autoSize: true,
     layout: {
       background: { type: ColorType.Solid, color: "transparent" },
       textColor: "#a3a3a3",
