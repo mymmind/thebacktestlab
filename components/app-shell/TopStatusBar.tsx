@@ -33,7 +33,7 @@ export function TopStatusBar({ compact = false }: TopStatusBarProps) {
   return (
     <header
       className={cn(
-        "flex shrink-0 items-center gap-3 border-b border-border bg-card/95 px-3 backdrop-blur-sm lg:gap-4 lg:px-4",
+        "flex w-full min-w-0 shrink-0 items-center gap-3 border-b border-border bg-card/95 px-3 backdrop-blur-sm lg:gap-4 lg:px-4",
         compact ? "h-11" : "h-12",
       )}
     >

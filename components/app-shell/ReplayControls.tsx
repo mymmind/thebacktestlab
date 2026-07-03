@@ -26,7 +26,7 @@ export function ReplayControls({ onShowShortcuts }: ReplayControlsProps) {
   const isPlaying = status === "playing";
 
   return (
-    <footer aria-label="Replay controls" className="control-deck h-14">
+    <footer aria-label="Replay controls" className="control-deck h-14 w-full shrink-0">
       <div className="flex items-center gap-2">
         <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           Replay

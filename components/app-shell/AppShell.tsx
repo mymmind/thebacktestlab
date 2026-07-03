@@ -25,12 +25,15 @@ export function AppShell() {
           open={shortcutsOpen}
           onClose={() => setShortcutsOpen(false)}
         />
-        <div className="flex h-screen flex-col overflow-hidden">
+        <div
+          className="flex h-screen w-full min-w-0 flex-col overflow-hidden bg-background"
+          data-testid="workspace-shell"
+        >
           <TopStatusBar />
-          <div className="flex min-h-0 flex-1">
+          <div className="flex min-h-0 w-full min-w-0 flex-1">
             <LeftNav />
-            <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-              <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,7.5fr)_minmax(0,2.5fr)]">
+            <main className="flex min-h-0 min-w-0 w-full flex-1 flex-col">
+              <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col md:flex-row">
                 <ChartPanel />
                 <TradePanel />
               </div>

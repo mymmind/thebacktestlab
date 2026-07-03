@@ -27,7 +27,7 @@ export function LeftNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="flex w-14 shrink-0 flex-col border-r border-border bg-sidebar lg:w-44"
+      className="flex w-14 shrink-0 flex-col self-stretch border-r border-border bg-sidebar lg:w-44"
     >
       <div className="hidden border-b border-border px-4 py-4 lg:block">
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">

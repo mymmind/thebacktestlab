@@ -59,6 +59,45 @@ test("symbol selector loads a different dataset", async ({ page }) => {
   );
 });
 
+test("workspace layout fills viewport with visible chart at desktop widths", async ({
+  page,
+}) => {
+  for (const width of [1280, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/workspace");
+    await expect(page.getByTestId("chart-ready")).toHaveText("ready", {
+      timeout: 10_000,
+    });
+
+    const layout = await page.evaluate(() => {
+      const shell = document.querySelector("[data-testid='workspace-shell']");
+      const header = document.querySelector("header");
+      const chart = document.querySelector("[data-testid='candle-chart']");
+      const footer = document.querySelector("footer");
+      const rect = (element: Element | null) =>
+        element?.getBoundingClientRect() ?? { width: 0, height: 0, left: 0 };
+
+      return {
+        viewport: window.innerWidth,
+        shellWidth: rect(shell).width,
+        headerWidth: rect(header).width,
+        chartWidth: rect(chart).width,
+        footerWidth: rect(footer).width,
+        bodyBg: getComputedStyle(document.body).backgroundColor,
+      };
+    });
+
+    expect(layout.shellWidth).toBeGreaterThanOrEqual(width - 2);
+    expect(layout.headerWidth).toBeGreaterThanOrEqual(width - 2);
+    expect(layout.footerWidth).toBeGreaterThanOrEqual(width - 2);
+    expect(layout.chartWidth).toBeGreaterThan(width * 0.45);
+    expect(layout.bodyBg).not.toBe("rgba(0, 0, 0, 0)");
+  }
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(page.getByTestId("candle-chart").locator("canvas").first()).toBeVisible();
+});
+
 test("chart workspace loads and timeframe switching updates chart state", async ({
   page,
 }) => {

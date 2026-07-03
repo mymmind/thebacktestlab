@@ -21,7 +21,7 @@ export function ChartPanel() {
   return (
     <section
       aria-label="Chart panel"
-      className="flex min-h-0 min-w-0 flex-1 flex-col border-r border-border bg-background"
+      className="flex min-h-0 min-w-0 w-full flex-1 flex-col border-r border-border bg-background md:min-w-[min(100%,480px)]"
     >
       <div className="panel-header">
         <span className="panel-header-title">Price Action Viewport</span>

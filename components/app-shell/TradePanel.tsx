@@ -32,7 +32,7 @@ export function TradePanel() {
     return (
       <aside
         aria-label="Trade panel"
-        className="flex w-10 shrink-0 flex-col items-center border-l border-border bg-card py-2 transition-all"
+        className="flex w-10 shrink-0 flex-col items-center self-stretch border-l border-border bg-card py-2 transition-all"
       >
         <Button
           variant="ghost"
@@ -52,7 +52,7 @@ export function TradePanel() {
   return (
     <aside
       aria-label="Trade panel"
-      className="animate-panel-in flex w-72 shrink-0 flex-col border-l border-border bg-card lg:w-80"
+      className="animate-panel-in flex min-h-0 w-full min-w-0 shrink-0 flex-col border-l border-border bg-card md:w-72 md:max-w-[min(100%,20rem)] lg:w-80 lg:max-w-[min(100%,20rem)]"
     >
       <div className="panel-header">
         <h2 className="panel-header-title text-foreground">Execution Deck</h2>
@@ -78,7 +78,7 @@ export function TradePanel() {
           : "No open position"}
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="min-h-0 flex-1">
         <div className="space-y-4 p-4">
           {draft ? (
             <TradeTicket

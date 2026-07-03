@@ -30,14 +30,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${ibmPlexMono.variable} dark h-full`}
+      className={`${syne.variable} ${ibmPlexMono.variable} dark h-full w-full`}
       style={
         {
           "--font-sans": "var(--font-display)",
         } as React.CSSProperties
       }
     >
-      <body className="flex min-h-full flex-col font-sans">
+      <body className="flex min-h-full w-full flex-col bg-background font-sans">
         {children}
         <DevFooter />
       </body>
