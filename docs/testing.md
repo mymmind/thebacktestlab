@@ -24,6 +24,30 @@ This runs, in order:
 | `npm run test:e2e:ui` | Playwright UI mode |
 | `npm run dev` | Local dev server (port 3000) |
 
+## Post-task Git Sync
+
+After every completed task, sync local and remote before marking work done. The always-on Cursor rule `.cursor/rules/git-sync.mdc` enforces this for agents.
+
+1. `git status` — commit all intentional changes; never commit secrets (`.env`, credentials)
+2. Commit with a meaningful HEREDOC message
+3. `git push origin main` (or current branch) — never force-push `main`/`master`
+4. `git fetch origin && git status` — confirm **0 ahead / 0 behind**
+
+Quick check:
+
+```bash
+npm run sync:git
+```
+
+Optional helper (verification/reporting only; fails on dirty tree; no auto-commit):
+
+```bash
+./scripts/git-sync.sh
+./scripts/git-sync.sh --push   # push current branch after checks pass
+```
+
+Remote: https://github.com/mymmind/thebacktestlab
+
 ## Conventions
 
 - Use `data-testid` for chart-adjacent state that is not easily queried by role/label

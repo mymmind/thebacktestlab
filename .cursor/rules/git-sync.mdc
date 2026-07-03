@@ -1,0 +1,43 @@
+---
+description: Post-task git sync — commit, push, and verify local matches remote
+alwaysApply: true
+---
+
+# Post-task Git Sync
+
+After **every** completed task (feature, fix, milestone, redesign), sync local and remote before marking the task done.
+
+Remote: https://github.com/mymmind/thebacktestlab
+
+## Protocol
+
+1. **Check status** — `git status`. Working tree must be clean, or commit all intentional changes.
+2. **Never commit secrets** — Do not stage or commit `.env`, credentials, API keys, or other sensitive files.
+3. **Commit** — Use a meaningful message via HEREDOC:
+
+   ```bash
+   git commit -m "$(cat <<'EOF'
+   Short summary of why this change exists.
+
+   EOF
+   )"
+   ```
+
+4. **Push** — `git push origin main` (or the current branch). **Never** force-push `main` or `master`.
+5. **Verify sync** — `git fetch origin && git status`. Confirm **0 ahead / 0 behind** relative to `origin/<branch>`.
+6. **Push failures** — If push fails (auth, permissions, network), report the blocker to the user. Do not mark the task complete.
+7. **Uncommitted work** — If intentional changes remain uncommitted, commit them before marking the task done.
+
+## Quick verification
+
+```bash
+npm run sync:git
+```
+
+Optional helper (fails on dirty tree unless `--push` is passed; reporting only, no auto-commit):
+
+```bash
+./scripts/git-sync.sh
+```
+
+See `docs/testing.md` — **Post-task Git Sync** for the full workflow alongside `npm run verify`.
